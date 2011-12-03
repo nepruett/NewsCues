@@ -8,5 +8,13 @@
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content" 
     android:text="@string/hello"
+    android:id="@+id/text"
     />
+    
+<Button 
+    android:layout_height="wrap_content" 
+    android:layout_width="match_parent" 
+    android:id="@+id/readWebpage" 
+    android:onClick="readWebpage" 
+    android:text="Load Webpage"/>
 </LinearLayout>
