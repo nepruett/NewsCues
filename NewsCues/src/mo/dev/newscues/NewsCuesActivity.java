@@ -11,6 +11,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -30,9 +31,11 @@ public class NewsCuesActivity extends Activity {
 			String response = "";
 			for (String url : urls) {
 				DefaultHttpClient client = new DefaultHttpClient();
+				Log.d(NewsCuesApplication.TAG, "getting " + url);
 				HttpGet httpGet = new HttpGet(url);
 				try {
 					HttpResponse execute = client.execute(httpGet);
+					Log.d(NewsCuesApplication.TAG, "Response code: " + execute.getStatusLine().getStatusCode());
 					InputStream content = execute.getEntity().getContent();
 
 					BufferedReader buffer = new BufferedReader(
@@ -55,9 +58,15 @@ public class NewsCuesActivity extends Activity {
 		}
 	}
     
-    public void readWebpage(View view) {
+    public void readFeed(View view) {
 		DownloadWebPageTask task = new DownloadWebPageTask();
-		task.execute(new String[] { "http://www.vogella.de" });
+		task.execute(new String[] { "http://www.uniquestyledrives.com/hack/index.php" });
+
+	}
+    
+    public void readArticles(View view) {
+		DownloadWebPageTask task = new DownloadWebPageTask();
+		task.execute("http://api.usatoday.com/open/articles/mobile/topnews?api_key=" + ApiKeys.USA_TODAY_ARTICLES);
 
 	}
 }

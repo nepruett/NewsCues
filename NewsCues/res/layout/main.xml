@@ -1,20 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     >
-<TextView  
-    android:layout_width="fill_parent" 
-    android:layout_height="wrap_content" 
-    android:text="@string/hello"
-    android:id="@+id/text"
-    />
-    
-<Button 
-    android:layout_height="wrap_content" 
-    android:layout_width="match_parent" 
-    android:id="@+id/readWebpage" 
-    android:onClick="readWebpage" 
-    android:text="Load Webpage"/>
+
+<Button android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/readWebpage" android:onClick="readFeed" android:text="Load Feed"></Button>
+<Button android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/readWebpage" android:onClick="readArticle" android:text="Load USA Today Articles"></Button>
+<TextView android:id="@+id/text" android:layout_width="match_parent" android:layout_height="match_parent" android:text="Example Text"></TextView>
 </LinearLayout>
