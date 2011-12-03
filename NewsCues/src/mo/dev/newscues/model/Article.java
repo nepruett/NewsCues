@@ -10,12 +10,14 @@ import org.json.JSONObject;
 public class Article {
 	private String title;
 	private String link;
+	private String description;
 	private List<String> imageUrls = new ArrayList<String>();
 	
 	public static final Article fromJSON(JSONObject json) throws JSONException {
 		Article article = new Article();
 		article.title = json.optString("title");
 		article.link = json.optString("link");
+		article.description = json.optString("description");
 		JSONArray images = json.getJSONArray("image");
 		for (int i = 0; i < images.length(); i++) {
 			article.addImage(images.getString(i));
@@ -52,8 +54,12 @@ public class Article {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Article:\n");
 		sb.append("\tTitle: " + title + "\n");
+		sb.append("\tDesc:  " + description + "\n");
 		sb.append("\tLink:  " + link + "\n");
-		sb.append("\tImages:" + imageUrls.size() + "\n");
+		sb.append("\tImages:\n");
+		for (String imageURL : imageUrls) {
+			sb.append("\t\t" + imageURL + "\n");
+		}
 		return sb.toString();
 	}
 }
