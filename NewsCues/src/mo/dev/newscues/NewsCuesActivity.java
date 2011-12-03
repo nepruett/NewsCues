@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import mo.dev.newscues.service.PullDataAsyncTask;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -25,33 +27,7 @@ public class NewsCuesActivity extends Activity {
         textView = (TextView) findViewById(R.id.text);
     }
     
-    private class DownloadWebPageTask extends AsyncTask<String, Void, String> {
-		@Override
-		protected String doInBackground(String... urls) {
-			String response = "";
-			for (String url : urls) {
-				DefaultHttpClient client = new DefaultHttpClient();
-				Log.d(NewsCuesApplication.TAG, "getting " + url);
-				HttpGet httpGet = new HttpGet(url);
-				try {
-					HttpResponse execute = client.execute(httpGet);
-					Log.d(NewsCuesApplication.TAG, "Response code: " + execute.getStatusLine().getStatusCode());
-					InputStream content = execute.getEntity().getContent();
-
-					BufferedReader buffer = new BufferedReader(
-							new InputStreamReader(content));
-					String s = "";
-					while ((s = buffer.readLine()) != null) {
-						response += s;
-					}
-
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-			return response;
-		}
-
+    private class DownloadWebPageTask extends PullDataAsyncTask {
 		@Override
 		protected void onPostExecute(String result) {
 			textView.setText(result);
@@ -60,13 +36,7 @@ public class NewsCuesActivity extends Activity {
     
     public void readFeed(View view) {
 		DownloadWebPageTask task = new DownloadWebPageTask();
-		task.execute(new String[] { "http://www.uniquestyledrives.com/hack/index.php" });
-
-	}
-    
-    public void readArticles(View view) {
-		DownloadWebPageTask task = new DownloadWebPageTask();
-		task.execute("http://api.usatoday.com/open/articles/mobile/topnews?api_key=" + ApiKeys.USA_TODAY_ARTICLES);
+		task.execute(new String[] { "http://www.uniquestyledrives.com/hack/index1.php" });
 
 	}
 }
