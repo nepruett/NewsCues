@@ -1,25 +1,23 @@
 package mo.dev.newscues;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
+import mo.dev.newscues.model.Article;
 import mo.dev.newscues.service.PullDataAsyncTask;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import android.app.Activity;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 public class NewsCuesActivity extends Activity {
+	
 	private TextView textView;
-    /** Called when the activity is first created. */
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,16 +25,28 @@ public class NewsCuesActivity extends Activity {
         textView = (TextView) findViewById(R.id.text);
     }
     
-    private class DownloadWebPageTask extends PullDataAsyncTask {
+    private class GetFeedTask extends PullDataAsyncTask {
 		@Override
 		protected void onPostExecute(String result) {
-			textView.setText(result);
+			List<Article> articles = new ArrayList<Article>();
+			try {
+				JSONArray jsonArticles = new JSONArray(result);
+				for (int i = 0; i < jsonArticles.length(); i++) {
+					articles.add(Article.fromJSON(jsonArticles.getJSONObject(i)));
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			StringBuilder text = new StringBuilder();
+			for (Article article : articles) {
+				text.append(article.toString());
+			}
+			textView.setText(text);
 		}
 	}
     
     public void readFeed(View view) {
-		DownloadWebPageTask task = new DownloadWebPageTask();
+    	GetFeedTask task = new GetFeedTask();
 		task.execute(new String[] { "http://www.uniquestyledrives.com/hack/index1.php" });
-
 	}
 }
