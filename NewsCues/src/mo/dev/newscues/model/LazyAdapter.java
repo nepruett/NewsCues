@@ -5,6 +5,7 @@ import java.util.List;
 import mo.dev.newscues.R;
 import android.app.Activity;
 import android.content.Context;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,11 +21,11 @@ public class LazyAdapter extends BaseAdapter {
     private static LayoutInflater inflater=null;
     public ImageLoader imageLoader; 
     
-    public LazyAdapter(Activity a, List<Article> d) {
+    public LazyAdapter(Activity a, Handler handler, List<Article> d) {
         activity = a;
         data=d;
         inflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        imageLoader=new ImageLoader(activity.getApplicationContext());
+        imageLoader=new ImageLoader(activity.getApplicationContext(), handler);
     }
 
     public int getCount() {

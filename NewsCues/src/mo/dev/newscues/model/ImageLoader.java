@@ -21,6 +21,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Handler;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.animation.AnimationUtils;
@@ -33,11 +34,13 @@ public class ImageLoader implements ViewFactory {
     MemoryCache memoryCache=new MemoryCache();
     FileCache fileCache;
     private Map<ImageSwitcher, List<String>> imageViews=Collections.synchronizedMap(new WeakHashMap<ImageSwitcher, List<String>>());
-    private Map<Thread, List<String>> threads =Collections.synchronizedMap(new WeakHashMap<Thread, List<String>>());
+    private Map<Runnable, List<String>> threads =Collections.synchronizedMap(new WeakHashMap<Runnable, List<String>>());
     ExecutorService executorService; 
+    Handler handler;
     
-    public ImageLoader(Context context){
+    public ImageLoader(Context context, Handler handler){
     	this.context = context;
+    	this.handler = handler;
         fileCache=new FileCache(context);
         executorService=Executors.newFixedThreadPool(5);
     }
@@ -58,13 +61,26 @@ public class ImageLoader implements ViewFactory {
         		int i = 0;
         		while (true) {
         			String url = urls.get(i);
-        			Bitmap bitmap=memoryCache.get(url);
-                    if(bitmap!=null)
-                        imageSwitcher.setImageDrawable(new BitmapDrawable(bitmap));
+        			final Bitmap bitmap=memoryCache.get(url);
+                    if(bitmap!=null) {
+                    	handler.post(new Runnable() {
+                        	@Override
+							public void run() {
+                        		imageSwitcher.setImageDrawable(new BitmapDrawable(bitmap));
+                        	}
+                        });
+                        
+                    }
                     else
                     {
                         queuePhoto(url, imageSwitcher);
-                        imageSwitcher.setImageResource(stub_id);
+                        handler.post(new Runnable() {
+                        	@Override
+							public void run() {
+                        		 imageSwitcher.setImageResource(stub_id);
+                        	}
+                        });
+                    
                     }
                     i = i++ % urls.size();
                     try {
@@ -79,7 +95,7 @@ public class ImageLoader implements ViewFactory {
         };
         Thread t = new Thread(r);
         t.start();
-        threads.put(t, urls);
+        threads.put(r, urls);
         
     }
     

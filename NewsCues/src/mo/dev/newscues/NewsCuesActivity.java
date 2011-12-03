@@ -20,6 +20,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,7 @@ public class NewsCuesActivity extends Activity {
 	private TextView textView;
 	private Gallery gallery;
 	private LazyAdapter adapter;
+	private Handler handler;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,7 @@ public class NewsCuesActivity extends Activity {
         setContentView(R.layout.main);
         textView = (TextView) findViewById(R.id.text);
         gallery = (Gallery)findViewById(R.id.gallery);
+        handler = new Handler();
     }
     
     @Override
@@ -65,7 +68,7 @@ public class NewsCuesActivity extends Activity {
 			for (Article article : articles) {
 				text.append(article.toString());
 			}
-			adapter = new LazyAdapter(NewsCuesActivity.this, articles);
+			adapter = new LazyAdapter(NewsCuesActivity.this, handler, articles);
 			gallery.setAdapter(adapter);
 			gallery.invalidate();
 			textView.setText(text);
