@@ -11,6 +11,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 public class NewsCuesActivity extends Activity {
@@ -52,5 +53,11 @@ public class NewsCuesActivity extends Activity {
 		protected void onPostExecute(String result) {
 			textView.setText(result);
 		}
+	}
+    
+    public void readWebpage(View view) {
+		DownloadWebPageTask task = new DownloadWebPageTask();
+		task.execute(new String[] { "http://www.vogella.de" });
+
 	}
 }
