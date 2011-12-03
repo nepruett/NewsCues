@@ -33,8 +33,7 @@ public class ImageLoader implements ViewFactory {
     Context context;
     MemoryCache memoryCache=new MemoryCache();
     FileCache fileCache;
-    private Map<ImageSwitcher, List<String>> imageViews=Collections.synchronizedMap(new WeakHashMap<ImageSwitcher, List<String>>());
-    private Map<Runnable, List<String>> threads =Collections.synchronizedMap(new WeakHashMap<Runnable, List<String>>());
+    private Map<ImageSwitcher, String> imageViews=Collections.synchronizedMap(new WeakHashMap<ImageSwitcher, String>());
     ExecutorService executorService; 
     Handler handler;
     
@@ -54,49 +53,29 @@ public class ImageLoader implements ViewFactory {
                     android.R.anim.fade_in));
     	imageSwitcher.setOutAnimation(AnimationUtils.loadAnimation(context,
                     android.R.anim.fade_out));
-        imageViews.put(imageSwitcher, urls);
-        Runnable r = new Runnable() {
-        	@Override
-			public void run() {
-        		int i = 0;
-        		while (true) {
-        			String url = urls.get(i);
-        			final Bitmap bitmap=memoryCache.get(url);
-                    if(bitmap!=null) {
-                    	handler.post(new Runnable() {
-                        	@Override
-							public void run() {
-                        		imageSwitcher.setImageDrawable(new BitmapDrawable(bitmap));
-                        	}
-                        });
-                        
-                    }
-                    else
-                    {
-                        queuePhoto(url, imageSwitcher);
-                        handler.post(new Runnable() {
-                        	@Override
-							public void run() {
-                        		 imageSwitcher.setImageResource(stub_id);
-                        	}
-                        });
-                    
-                    }
-                    i = i++ % urls.size();
-                    try {
-						Thread.sleep(10000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-        		}
-        		
-        	}
-        };
-        Thread t = new Thread(r);
-        t.start();
-        threads.put(r, urls);
+    	String url = urls.get(0);
+        imageViews.put(imageSwitcher, url);
+        final Bitmap bitmap=memoryCache.get(url);
+        if(bitmap!=null) {
+        	handler.post(new Runnable() {
+            	@Override
+				public void run() {
+            		imageSwitcher.setImageDrawable(new BitmapDrawable(bitmap));
+            	}
+            });
+            
+        }
+        else
+        {
+            queuePhoto(url, imageSwitcher);
+            handler.post(new Runnable() {
+            	@Override
+				public void run() {
+            		 imageSwitcher.setImageResource(stub_id);
+            	}
+            });
         
+        }
     }
     
     @Override
@@ -205,8 +184,8 @@ public class ImageLoader implements ViewFactory {
     }
     
     boolean imageViewReused(PhotoToLoad photoToLoad){
-        List<String> tag=imageViews.get(photoToLoad.imageView);
-        if(tag==null || !tag.contains(photoToLoad.url))
+        String tag=imageViews.get(photoToLoad.imageView);
+        if(tag==null || !tag.equals(photoToLoad.url))
             return true;
         return false;
     }
