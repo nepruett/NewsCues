@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     >
 
-<Button android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/readWebpage" android:onClick="readFeed" android:text="Load Feed"></Button>
-<Button android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/readWebpage" android:onClick="readArticle" android:text="Load USA Today Articles"></Button>
+<Button android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/readFeed" android:onClick="readFeed" android:text="Load Feed"></Button>
+<Button android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/readArticles" android:onClick="readArticle" android:text="Load USA Today Articles"></Button>
 <TextView android:id="@+id/text" android:layout_width="match_parent" android:layout_height="match_parent" android:text="Example Text"></TextView>
 </LinearLayout>
