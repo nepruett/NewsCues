@@ -9,6 +9,7 @@ import java.net.URL;
 import java.util.List;
 
 import mo.dev.newscues.model.Article;
+import mo.dev.newscues.model.LazyAdapter;
 import mo.dev.newscues.service.PullDataAsyncTask;
 
 import org.json.JSONArray;
@@ -32,7 +33,7 @@ public class NewsCuesActivity extends Activity {
 	private List<Article> articles = NewsCuesApplication.getArticles();
 	private TextView textView;
 	private Gallery gallery;
-	private ImageAdapter imageAdapter;
+	private LazyAdapter adapter;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,8 +41,12 @@ public class NewsCuesActivity extends Activity {
         setContentView(R.layout.main);
         textView = (TextView) findViewById(R.id.text);
         gallery = (Gallery)findViewById(R.id.gallery);
-        imageAdapter = new ImageAdapter(this);
-        gallery.setAdapter(imageAdapter);
+    }
+    
+    @Override
+    protected void onDestroy() {
+    	gallery.setAdapter(null);
+    	super.onDestroy();
     }
     
     private class GetFeedTask extends PullDataAsyncTask {
@@ -60,6 +65,9 @@ public class NewsCuesActivity extends Activity {
 			for (Article article : articles) {
 				text.append(article.toString());
 			}
+			adapter = new LazyAdapter(NewsCuesActivity.this, articles);
+			gallery.setAdapter(adapter);
+			gallery.invalidate();
 			textView.setText(text);
 		}
 	}
